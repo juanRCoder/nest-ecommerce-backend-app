@@ -1,6 +1,6 @@
 <div style="display: flex; align-items: center; gap: 10px">
     <img src="https://nestjs.com/img/logo-small.svg" width="50" alt="Nest Logo" />
-  <h1 style="font-size: 24px; font-weight: bold;">Monolithic E-commerce</h1>
+  <p style="font-size: 24px; font-weight: bold;">Monolithic E-commerce</p>
 </div>
 
 ## Description
