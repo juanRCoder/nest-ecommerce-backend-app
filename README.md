@@ -1,4 +1,4 @@
-<h1 style="font-size: 24px; font-weight: bold;">
+<h1 style="font-size: 24px; font-weight: bold; display:flex; align-items: center; justify-content: left">
     <img src="https://nestjs.com/img/logo-small.svg" width="50" alt="Nest Logo" />
     Monolithic E-commerce
 </h1>
