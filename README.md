@@ -1,7 +1,7 @@
-<div style="display: flex; align-items: center; gap: 10px">
+<h1 style="font-size: 24px; font-weight: bold;">
     <img src="https://nestjs.com/img/logo-small.svg" width="50" alt="Nest Logo" />
-  <p style="font-size: 24px; font-weight: bold;">Monolithic E-commerce</p>
-</div>
+    Monolithic E-commerce
+</h1>
 
 ## Description
 - Infraestructura de un servidor monolito el cual tiene como funcion implementar los servicios necesarios para realizar una tienda virtual(E-commerce).
