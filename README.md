@@ -1,4 +1,4 @@
-<p align="center" style="display: flex ; align-items: center; gap: 10px">
+<px style="display: flex ; align-items: center; gap: 10px">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="50" alt="Nest Logo" /></a>
   <span style="display: inline-block; vertical-align: middle; font-size: 24px; font-weight: bold;">Monolithic E-commerce</span>
 </p>
