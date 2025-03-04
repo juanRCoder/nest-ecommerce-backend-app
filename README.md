@@ -4,7 +4,7 @@
 </h1>
 
 ## Description
-- Infraestructura de un servidor monolito el cual tiene como funcion implementar los servicios necesarios para realizar una tienda virtual(E-commerce).
+- Infraestructura de un servidor monolito para una aplicación de comercio electrónico. Funciones principales del negocio (usuarios, productos, pagos), con su propia API y base de datos.
 ## Technologies
 [![My Skills](https://skillicons.dev/icons?i=nestjs,typescript,prisma,docker,postgres,&perline=6)](https://skillicons.dev)
 ## Features
