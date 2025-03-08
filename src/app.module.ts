@@ -10,7 +10,7 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     AuthModule,
     ConfigModule.forRoot({
-      isGlobal: true,
+      isGlobal: true, // enable environment variables
     }),
   ],
   controllers: [AppController],

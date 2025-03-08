@@ -13,9 +13,12 @@
 - Procesamiento de pagos y manejo de órdenes.
 ## API Endpoints
 ```bash
-POST  /users/register  #Crear un nuevo usuario.
-POST  /users/login     #Autenticación de usuarios.
-GET   /users/:id       #Obtener información del perfil de un usuario.
+POST  /auth/register   #Registra un nuevo usuario.
+POST  /auth/login      #Inicia session el usuario autenticado.
+
+GET   /users/profile   #Obtener información del perfil del usuario.
+GET   /users/:id       #Obtener informacion de un usuario en especifico.
+PUT   /users/:id       #Actualizar la informacion de un usuario en concreto.
 
 GET   /products        #Listar productos con soporte para paginación y filtros.
 POST  /products        #Agregar un nuevo producto.
