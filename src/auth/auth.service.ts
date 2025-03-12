@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { signInDto } from './dto/auth.dto';
-import { UserDto } from 'src/users/dto/user.dto';
+import { UserDto } from 'src/users/dto/users.dto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma.service';
 

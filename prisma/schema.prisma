@@ -14,13 +14,30 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  name     String  @unique
-  email    String  @unique
-  password String
+  id        String  @id @default(uuid())
+  name      String  @unique
+  email     String  @unique
+  password  String
 
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
 
   @@map("users")
+}
+
+model Product {
+  id        String  @id @default(uuid())
+  name      String
+  category  String[]
+  price     Decimal
+  stock     Int
+  minStock  Int
+  unitPrice Decimal
+  status    String
+  imageUrl  String?
+
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  @@map("products")
 }

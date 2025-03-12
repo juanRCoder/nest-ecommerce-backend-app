@@ -10,7 +10,7 @@ import {
 import { UsersService } from './users.service';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthGuard } from 'src/auth/auth.guard';
-import { UpdateUserDto } from './dto/user.dto';
+import { UpdateUserDto } from './dto/users.dto';
 
 @Controller('users')
 export class UsersController {
