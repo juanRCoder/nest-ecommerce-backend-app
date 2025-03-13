@@ -3,7 +3,7 @@ import {
   Controller,
   Get,
   Param,
-  Put,
+  Patch,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -27,7 +27,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   updateUser(
     @Param('id') id: ReturnType<typeof uuidv4>,
     @Body() updateData: UpdateUserDto,

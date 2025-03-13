@@ -7,6 +7,16 @@ import { PrismaService } from 'src/prisma.service';
 export class ProductsService {
   constructor (private prisma: PrismaService) {}
 
+  async findAll() {
+    return this.prisma.product.findMany();
+  }
+
+  async findOne(id: string) {
+    return await this.prisma.product.findUnique({
+      where: { id },
+    })
+  }
+
   async create(createProductDto: CreateProductDto) {
     return await this.prisma.product.create({
       data: {
@@ -15,19 +25,16 @@ export class ProductsService {
     })
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async update(id: string, updateProductDto: UpdateUserDto) {
+    return await this.prisma.product.update({
+      where: { id },
+      data: updateProductDto
+    })
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} product`;
-  }
-
-  update(id: string, updateProductDto: UpdateUserDto) {
-    return `This action updates a #${id} product`;
-  }
-
-  remove(id: string) {
-    return `This action removes a #${id} product`;
+  async remove(id: string) {
+    return await this.prisma.product.delete({
+		  where: { id }
+	  })
   }
 }

@@ -42,9 +42,10 @@ export class AuthService {
     }
 
     const hash = await bcrypt.hash(signUpUser.password, 10);
+    const { password, ...userData } = signUpUser;  // remove text password
     const newUser = await this.prisma.user.create({
       data: {
-        ...signUpUser,
+        ...userData,
         password: hash,
       },
     });

@@ -28,11 +28,11 @@ model User {
 model Product {
   id        String  @id @default(uuid())
   name      String
+  description String
   category  String[]
   price     Decimal
   stock     Int
   minStock  Int
-  unitPrice Decimal
   status    String
   imageUrl  String?
 
