@@ -7,27 +7,39 @@ import { PrismaService } from 'src/prisma.service';
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(page?: number, limit?: number) {
+  async findAll(page?: number, limit?: number, category?: string) {
+    
+    const categories = category ? category.split(',') : undefined;
+
+    const whereCondition = categories
+      ? { category: { hasSome: categories } }
+      : {};
+
     if (!page || !limit) {
-      const products = await this.prisma.product.findMany();
+      const products = await this.prisma.product.findMany({
+        where: whereCondition
+      });
       return products;
     }
     const offset = (page - 1) * limit;
     const [products, total] = await Promise.all([
       this.prisma.product.findMany({
+        where: whereCondition,
         skip: offset,
         take: limit,
       }),
-      this.prisma.product.count(),
+      this.prisma.product.count({
+        where: whereCondition
+      }),
     ]);
     return {
-      products,
       pagination: {
-        products: products.length,
+        products: total,
         limit,
         offset,
         totalPages: Math.ceil(total / limit),
       },
+      products,
     };
   }
 
