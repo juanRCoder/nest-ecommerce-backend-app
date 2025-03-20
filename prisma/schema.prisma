@@ -40,6 +40,7 @@ model Product {
   createAt  DateTime @default(now())
   updateAt  DateTime @updatedAt
 
+  Order_Product    Order_Product[]
   @@map("products")
 }
 
@@ -54,5 +55,21 @@ model Order {
   updateAt  DateTime @updatedAt
 
   user      User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  Order_Product    Order_Product[]
   @@map("orders")
+}
+
+model Order_Product {
+  id        String  @id @default(uuid())
+  order_id  String  // foreign key
+  product_id String // foreign key
+  quantity  Int
+  price     Decimal
+
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  order     Order   @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  @@map("order_products")
 }
