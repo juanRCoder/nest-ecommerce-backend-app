@@ -4,4 +4,4 @@ export interface UserDto {
   password: string
 }
 
-export type UpdateUserDto = Omit<Partial<UserDto>, 'password'>;
+export type UpdateUserDto = Partial<Omit<UserDto, 'password'>>;
