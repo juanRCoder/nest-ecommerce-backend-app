@@ -10,8 +10,28 @@ import { PrismaService } from 'src/prisma.service';
 export class OrdersService {
   constructor(private prisma: PrismaService) {}
 
-  findAll() {
-    return `This action returns all orders`;
+  async findAll() {
+    try {
+      const getAllOrders = await this.prisma.order.findMany({
+        include: {
+          user: true,
+        },
+      });
+
+      return getAllOrders.map((order) => ({
+        id: order.id,
+        total: order.total,
+        status: order.status,
+        delivery_method: order.delivery_method,
+        user: {
+          id: order.user.id,
+          name: order.user.name,
+          email: order.user.email
+        },
+      }));
+    } catch (error) {
+      throw new InternalServerErrorException('failure to get orders');
+    }
   }
 
   async create(createOrderDto: CreateOrderDto) {
@@ -22,24 +42,45 @@ export class OrdersService {
     }
 
     try {
-      await this.prisma.$transaction(async (prisma) => {
-        const newOrder = await prisma.order.create({
+      const order = await this.prisma.$transaction(async (prisma) => {
+        const createdOrder = await prisma.order.create({
           data: { ...createOrder },
         });
 
         await prisma.order_Product.createMany({
           data: products.map((pr) => ({
-            order_id: newOrder.id,
+            order_id: createdOrder.id,
             product_id: pr.id,
             quantity: pr.quantity,
             price: pr.price,
           })),
         });
 
-        return undefined; // Explicitamos que no se retorna nada
+        const getOrder = await prisma.order.findUnique({
+          where: { id: createdOrder.id }, //filtra la orden por id
+          include: {
+            Order_Product: {
+              // filtra productos asociados a la orden
+              include: {
+                product: true, // trae los datos completos de los productos filtrados por id
+              },
+            },
+          },
+        });
+
+        const { createAt, updateAt, ...newOrder } = createdOrder;
+        return {
+          ...newOrder,
+          products: getOrder.Order_Product.map((op) => ({
+            product_id: op.product_id,
+            name: op.product.name,
+            quantity: op.quantity,
+            price: op.price,
+          })),
+        };
       });
-      
-      return { message: 'Order created successfully' };
+
+      return { message: 'Order created successfully', order };
     } catch (error) {
       throw new InternalServerErrorException('Order creation failed');
     }
