@@ -26,11 +26,37 @@ export class OrdersService {
         user: {
           id: order.user.id,
           name: order.user.name,
-          email: order.user.email
+          email: order.user.email,
         },
       }));
     } catch (error) {
       throw new InternalServerErrorException('failure to get orders');
+    }
+  }
+
+  async findOne(id: string) {
+    if (!id) {
+      throw new BadRequestException('id not found');
+    }
+    try {
+      const getOrder = await this.prisma.order.findUnique({
+        where: { id },
+        include: {
+          user: true,
+        },
+      });
+
+      const { createAt, updateAt, user_id, ...order } = getOrder;
+      return {
+        ...order,
+        user: {
+          id: getOrder.user.id,
+          name: getOrder.user.name,
+          email: getOrder.user.email,
+        },
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('failure to get order by id');
     }
   }
 
@@ -84,10 +110,6 @@ export class OrdersService {
     } catch (error) {
       throw new InternalServerErrorException('Order creation failed');
     }
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
