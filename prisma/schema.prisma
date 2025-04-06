@@ -65,7 +65,7 @@ model Payment {
   order_id  String  @unique  // foreign key
   payment_method  String
   payment_status  String
-  voucher   String?
+  voucherUrl   String?
 
   createAt  DateTime @default(now())
   updateAt  DateTime @updatedAt

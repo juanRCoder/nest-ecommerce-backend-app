@@ -15,6 +15,11 @@ export class OrdersService {
       const getAllOrders = await this.prisma.order.findMany({
         include: {
           user: true,
+          Order_Product: {
+            include: {
+              product: true,
+            },
+          },
         },
       });
 
@@ -24,10 +29,14 @@ export class OrdersService {
         status: order.status,
         delivery_method: order.delivery_method,
         user: {
-          id: order.user.id,
-          name: order.user.name,
-          email: order.user.email,
+          name: order.user.name
         },
+        products: order.Order_Product.map((pr) => ({
+          name: pr.product.name,
+          quantity: pr.quantity,
+          price: pr.price,
+          imageUrl: pr.product.imageUrl
+        }))
       }));
     } catch (error) {
       throw new InternalServerErrorException('failure to get orders');
@@ -43,17 +52,26 @@ export class OrdersService {
         where: { id },
         include: {
           user: true,
+          Order_Product: {
+            include: {
+              product: true,
+            },
+          },
         },
       });
 
-      const { createAt, updateAt, user_id, ...order } = getOrder;
+      const { createAt, updateAt, user_id, Order_Product, ...order } = getOrder;
       return {
         ...order,
         user: {
-          id: getOrder.user.id,
-          name: getOrder.user.name,
-          email: getOrder.user.email,
+          name: getOrder.user.name
         },
+        products: getOrder.Order_Product.map((pr) => ({
+          name: pr.product.name,
+          quantity: pr.quantity,
+          price: pr.price,
+          imageUrl: pr.product.imageUrl
+        })),
       };
     } catch (error) {
       throw new InternalServerErrorException('failure to get order by id');
@@ -83,12 +101,11 @@ export class OrdersService {
         });
 
         const getOrder = await prisma.order.findUnique({
-          where: { id: createdOrder.id }, //filtra la orden por id
+          where: { id: createdOrder.id },
           include: {
             Order_Product: {
-              // filtra productos asociados a la orden
               include: {
-                product: true, // trae los datos completos de los productos filtrados por id
+                product: true,
               },
             },
           },
