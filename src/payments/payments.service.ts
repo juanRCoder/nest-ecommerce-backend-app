@@ -6,12 +6,64 @@ import { PrismaService } from 'src/prisma.service';
 export class PaymentsService {
   constructor(private prisma: PrismaService) {}
 
-  findAll() {
-    return `This action returns all payments`;
+  private paymentInclude = {
+    order: {
+      include: {
+        user: true,
+        Order_Product: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    },
+  };
+  
+  private formatPayment(payment) {
+    const { updateAt, order_id, ...newPayment } = payment;
+    return {
+      ...newPayment,
+      order: {
+        id: payment.order.id,
+        total: payment.order.total,
+        status: payment.order.status,
+        delivery_method: payment.order.delivery_method,
+      },
+      user: {
+        name: payment.order.user.name,
+      },
+      products: payment.order.Order_Product.map(pr => ({
+        name: pr.product.name,
+        quantity: pr.quantity,
+        price: pr.price,
+        imgUrl: pr.product.imageUrl,
+      })),
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} payment`;
+  async findAll() {
+    try {
+      const payments = await this.prisma.payment.findMany({
+        include: this.paymentInclude,
+      });
+  
+      return payments.map(this.formatPayment);
+    } catch (error) {
+      throw new InternalServerErrorException('Payment get all failed');
+    }
+  }
+
+  async findOne(id: string) {
+    try {
+      const payment = await this.prisma.payment.findUnique({
+        where: { id },
+        include: this.paymentInclude,
+      });
+  
+      return this.formatPayment(payment);
+    } catch (error) {
+      throw new InternalServerErrorException('Payment get for id failed');
+    }
   }
 
   async create(createPaymentDto: CreatePaymentDto) {
@@ -20,43 +72,15 @@ export class PaymentsService {
         const createdPayment = await prisma.payment.create({
           data: { ...createPaymentDto },
         });
-
+  
         const getVoucher = await prisma.payment.findUnique({
           where: { id: createdPayment.id },
-          include: { // Order table for order_id
-            order: {
-              include: { // > relation Order_Product table for product_id && User table for user_id
-                user: true,
-                Order_Product: {
-                  include: { // > relation Product table
-                    product: true,
-                  },
-                },
-              },
-            },
-          },
+          include: this.paymentInclude,
         });
-
-        const { updateAt, order_id, ...newPayment } = getVoucher;
-        return {
-          ...newPayment,
-          order: {
-            id: newPayment.order.id,
-            total: newPayment.order.total,
-            status: newPayment.order.status,
-            delivery_method: newPayment.order.delivery_method
-          },
-          user: {
-            name: newPayment.order.user.name
-          },
-          products: newPayment.order.Order_Product.map(pr => ({
-            name: pr.product.name,
-            quantity: pr.quantity,
-            price: pr.price,
-            imgUrl: pr.product.price
-          }))
-        };
+  
+        return this.formatPayment(getVoucher);
       });
+  
       return { message: 'Payment created successfully', payment };
     } catch (error) {
       throw new InternalServerErrorException('Payment creation failed');
