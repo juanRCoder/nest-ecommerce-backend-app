@@ -9,19 +9,21 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { v4 as uuidv4 } from 'uuid';
-import { AuthGuard } from 'src/auth/auth.guard';
 import { UpdateUserDto } from './dto/users.dto';
+import { TokenGuard } from 'src/guards/token.guard';
+import { RoleGuard } from 'src/guards/role.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AuthGuard)
+  @UseGuards(TokenGuard)
   @Get('profile')
   getProfile(@Request() req: any) {
-    return req.user;
+    return req.user; // return token data
   }
 
+  @UseGuards(RoleGuard)
   @Get()
   findAll() {
     return this.usersService.findAll()
@@ -32,6 +34,7 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @UseGuards(TokenGuard)
   @Patch(':id')
   updateUser(
     @Param('id') id: ReturnType<typeof uuidv4>,

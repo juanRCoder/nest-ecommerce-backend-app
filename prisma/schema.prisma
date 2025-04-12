@@ -18,6 +18,7 @@ model User {
   name      String  @unique
   email     String  @unique
   phone     Int?
+  role      String  @default("user")
   password  String
 
   createAt  DateTime @default(now())

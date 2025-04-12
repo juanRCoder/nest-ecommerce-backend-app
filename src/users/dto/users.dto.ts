@@ -1,8 +1,20 @@
-export interface UserDto {
-  name: string
-  email: string
-  phone: number
-  password: string
+import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { IsEmail, IsNumber, IsString } from 'class-validator';
+
+export class UserDto {
+  @IsString()
+  name: string;
+
+  @IsEmail()
+  email: string;
+
+  @IsNumber()
+  phone: number;
+
+  @IsString()
+  password: string;
 }
 
-export type UpdateUserDto = Partial<Omit<UserDto, 'password'>>;
+export class UpdateUserDto extends OmitType(PartialType(UserDto), [
+  'password',
+] as const) {}

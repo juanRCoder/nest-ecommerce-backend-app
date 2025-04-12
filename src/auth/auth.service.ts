@@ -17,24 +17,21 @@ export class AuthService {
   ) {}
 
   private async createTokenAndSendData(
-    user: UserDto & { id: string },
+    user: UserDto & { id: string, role: string },
   ): Promise<{
-    user: Omit<UserDto, 'password'> & { id: string };
+    user: { name: string, group: string };
     token: string;
   }> {
-    const { password, ...userWithoutPassword } = user;
-    const payload = { id: user.id, name: user.name, email: user.email };
+    const payload = { id: user.id, email: user.email, role: user.role };
     return {
-      user: userWithoutPassword,
+      user: { name: user.name, group: "in progress" },
       token: await this.jwtService.signAsync(payload),
     };
   }
 
   async signUp(signUpUser: UserDto) {
     const findedEmail = await this.prisma.user.findUnique({
-      where: {
-        email: signUpUser.email,
-      },
+      where: { email: signUpUser.email },
     });
 
     if (findedEmail) {
@@ -42,7 +39,7 @@ export class AuthService {
     }
 
     const hash = await bcrypt.hash(signUpUser.password, 10);
-    const { password, ...userData } = signUpUser;  // remove text password
+    const { password, ...userData } = signUpUser;
     const newUser = await this.prisma.user.create({
       data: {
         ...userData,
@@ -51,14 +48,12 @@ export class AuthService {
     });
 
     const { createAt, updateAt, ...result } = newUser;
-    return this.createTokenAndSendData(result);
+    return this.createTokenAndSendData({...result, role: "user"}); //temporary
   }
 
   async signIn(logInUser: signInDto) {
     const findedUser = await this.prisma.user.findUnique({
-      where: {
-        email: logInUser.email,
-      },
+      where: { email: logInUser.email },
     });
 
     if (!findedUser) {
