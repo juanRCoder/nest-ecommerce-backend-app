@@ -87,7 +87,18 @@ export class PaymentsService {
     }
   }
 
-  update(id: number, updatePaymentDto: UpdatePaymentDto) {
+  async update(id: string, updatePaymentDto: UpdatePaymentDto) {
+    try {
+      const updatedPayment = await this.prisma.payment.update({
+        where: { id },
+        data: updatePaymentDto
+      })
+
+      return { message: 'Payment updated successfully', updatedPayment}
+
+    } catch(error) {
+      throw new InternalServerErrorException('Payment update failed')
+    }
     return `This action updates a #${id} payment`;
   }
 

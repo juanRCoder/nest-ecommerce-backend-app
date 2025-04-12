@@ -1,10 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { UpdateUserDto } from './dto/users.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
+
+  async findAll() {
+    try {
+      const findAllUsers = await this.prisma.user.findMany()
+      const usersWithoutPassword = findAllUsers.map(user => {
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      });
+      return usersWithoutPassword
+    } catch(error) {
+      throw new InternalServerErrorException('Failed to get all users');
+    }
+  }
 
   async findOne(id: string) {
     const findedUser = await this.prisma.user.findUnique({

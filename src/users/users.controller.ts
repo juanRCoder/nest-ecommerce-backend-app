@@ -22,6 +22,11 @@ export class UsersController {
     return req.user;
   }
 
+  @Get()
+  findAll() {
+    return this.usersService.findAll()
+  }
+
   @Get(':id')
   findOne(@Param('id') id: ReturnType<typeof uuidv4>) {
     return this.usersService.findOne(id);
