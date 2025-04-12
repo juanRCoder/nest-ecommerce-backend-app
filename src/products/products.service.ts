@@ -37,7 +37,8 @@ export class ProductsService {
         products: total,
         limit,
         offset,
-        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+        totalPages: Math.ceil(total / limit)
       },
       products,
     };

@@ -3,7 +3,7 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { CreateOrderDto, UpdateOrderDto } from './dto/orders.dto';
+import { CreateOrderDto } from './dto/orders.dto';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -100,11 +100,11 @@ export class OrdersService {
     }
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
+  // update(id: number, updateOrderDto: UpdateOrderDto) {
+  //   return `This action updates a #${id} order`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} order`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} order`;
+  // }
 }
