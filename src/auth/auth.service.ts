@@ -17,14 +17,14 @@ export class AuthService {
   ) {}
 
   private async createTokenAndSendData(
-    user: UserDto & { id: string, role: string },
+    user: UserDto & { id: string; role: string },
   ): Promise<{
-    user: { name: string, group: string };
+    user: { name: string; group: string };
     token: string;
   }> {
-    const payload = { id: user.id, email: user.email, role: user.role };
+    const payload = { id: user.id, email: user.email, role: user.role};
     return {
-      user: { name: user.name, group: "in progress" },
+      user: { name: user.name, group: 'in progress' },
       token: await this.jwtService.signAsync(payload),
     };
   }
@@ -43,7 +43,7 @@ export class AuthService {
     const newUser = await this.prisma.user.create({
       data: {
         ...userData,
-        password: hash,
+        password: hash
       },
     });
 

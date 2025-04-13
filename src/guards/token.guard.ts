@@ -19,7 +19,7 @@ export class TokenGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException('without authorization, no token was provided');
+      throw new UnauthorizedException('Without authentication, no token was provided');
     }
     try {
       const secret = this.configService.get<string>('JWT_SECRET');

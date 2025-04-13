@@ -23,15 +23,15 @@ export class UsersController {
     return req.user; // return token data
   }
 
-  @UseGuards(RoleGuard)
+  @UseGuards(TokenGuard, RoleGuard)
   @Get()
   findAll() {
-    return this.usersService.findAll()
+    return this.usersService.findAllUsers()
   }
 
   @Get(':id')
   findOne(@Param('id') id: ReturnType<typeof uuidv4>) {
-    return this.usersService.findOne(id);
+    return this.usersService.findOneUser(id);
   }
 
   @UseGuards(TokenGuard)

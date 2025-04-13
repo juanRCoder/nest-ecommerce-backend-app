@@ -6,7 +6,7 @@ import { UpdateUserDto } from './dto/users.dto';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
+  async findAllUsers() {
     try {
       const findAllUsers = await this.prisma.user.findMany();
       const usersWithoutPassword = findAllUsers.map((user) => {
@@ -15,11 +15,11 @@ export class UsersService {
       });
       return usersWithoutPassword;
     } catch (error) {
-      throw new InternalServerErrorException('[Controller: findAll]', error);
+      throw new InternalServerErrorException('[findAllUsers service]', error);
     }
   }
 
-  async findOne(id: string) {
+  async findOneUser(id: string) {
     try {
       const findedUser = await this.prisma.user.findUnique({
         where: { id },
@@ -27,7 +27,7 @@ export class UsersService {
       const { createAt, updateAt, password, ...result } = findedUser;
       return result;
     } catch (error) {
-      throw new InternalServerErrorException('[Controller: findOne]', error);
+      throw new InternalServerErrorException('[findOneUser service]', error);
     }
   }
 
@@ -40,7 +40,7 @@ export class UsersService {
 
       return { message: 'updated user successfully' };
     } catch (error) {
-      throw new InternalServerErrorException('[Controller: updateUser]', error);
+      throw new InternalServerErrorException('[updateUser service]', error);
     }
   }
 }

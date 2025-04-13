@@ -13,17 +13,23 @@
 - Procesamiento de pagos y manejo de órdenes.
 ## API Endpoints
 ```bash
-POST  /auth/register   #Registra un nuevo usuario.
-POST  /auth/login      #Inicia session un usuario registrado.
+POST   /auth/register   #Registra un nuevo usuario.
+POST   /auth/login      #Inicia session un usuario registrado.
 
-GET   /users/profile   #Obtener información del perfil del usuario autenticado.
-GET   /users           #Obtiene toda la lista de usuarios, solo administradores autorizados.
-GET   /users/:id       #Obtener informacion de un usuario en especifico mediante id.
-PATCH /users/:id       #Actualizar la informacion del usuario autenticado mediante id.
--
-GET   /products        #Listar productos con soporte para paginación y filtros.
-POST  /products        #Agregar un nuevo producto.
-PUT   /products/:id    #Actualizar la información de un producto.
+GET    /users/profile   #Obtener información del perfil del usuario autenticado.
+GET    /users           #Obtiene toda la lista de usuarios, solo administradores autorizados.
+GET    /users/:id       #Obtener informacion de un usuario en especifico mediante id.
+PATCH  /users/:id       #Actualizar la informacion del usuario autenticado mediante id.
+
+GET    /products        #Listado de productos por paginado y filtrado de categorias.
+?page=         #pagina de productos que ver.
+?limit=        #limite de productos que ver por pagina.
+?category=     #categoria de productos que ver.
+
+GET    /products/:id    #Obtener informacion de un producto en especifico mediante id.
+POST   /products        #Agregar un nuevo producto, solo administradores autorizados.
+PATCH  /products/:id    #Actualizar la información de un producto solo adminstrador autorizado.
+DELETE /products/:id    #Remover el producto, solo administrador autorizado.
 
 POST  /payments        #Crear una nueva transacción de pago.
 GET   /payments/:id    #Consultar el estado de un pago.
