@@ -30,8 +30,8 @@ POST   /products        #Agregar un nuevo producto, solo administradores autoriz
 PATCH  /products/:id    #Actualizar la información de un producto solo adminstrador autorizado.
 DELETE /products/:id    #Remover el producto, solo administrador autorizado.
 
-GET	/orders/		#Listado de ordenes, solo administradores autorizados.
-GET	/orders/:id	  #Obtener informacion de la orden, debe estar autenticado.
+GET/orders/	#Listado de ordenes, solo administradores autorizados.
+GET/orders/:id	#Obtener informacion de la orden, debe estar autenticado.
 POST   /orders/		#Crear una nueva orden, debe estar autenticado.
 PATCH  /orders/:id	#Actualizar la información de una orden solo adminstrador autorizado.
 DELETE /orders/:id	#Eliminar la orden solo adminstrador autorizado.
