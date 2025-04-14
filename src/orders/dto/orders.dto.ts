@@ -1,15 +1,46 @@
-interface ProductsCart {
+import {
+  IsArray,
+  IsDecimal,
+  IsIn,
+  IsString,
+  ValidateNested,
+  IsNumber,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
+
+export class ProductsCart {
+  @IsString()
   id: string;
+
+  @IsNumber()
   quantity: number;
+
+  @IsDecimal()
   price: number;
 }
 
-export interface CreateOrderDto {
+export class CreateOrderDto {
+  @IsString()
   user_id: string;
-  status: 'pending' | 'preparing' | 'ready';
+
+  @IsString()
+  @IsIn(['pending', 'ready', 'completed'])
+  status: 'pending' | 'ready' | 'completed';
+
+  @IsString()
+  @IsIn(['local', 'delivery'])
   delivery_method: 'local' | 'delivery';
-  products: ProductsCart[];
+
+  @IsDecimal()
   total: number;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductsCart)
+  products: ProductsCart[];
 }
 
-export type UpdateOrderDto = Partial<Omit<CreateOrderDto, 'products'>>;
+export class UpdateOrderDto extends OmitType(PartialType(CreateOrderDto), [
+  'products',
+] as const) {}
