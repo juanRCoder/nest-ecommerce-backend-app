@@ -1,8 +1,21 @@
+import { PartialType } from '@nestjs/mapped-types';
+import { IsIn, IsOptional, IsString } from 'class-validator';
+
 export class CreatePaymentDto {
-  order_id: string
-  payment_method: string
-  payment_status: string
-  voucherUrl?: string
+  @IsString()
+  order_id: string;
+
+  @IsString()
+  @IsIn(['bank account', 'cash'])
+  payment_method: string;
+
+  @IsString()
+  @IsIn(['pending', 'completed', 'failed', 'canceled'])
+  payment_status: string;
+
+  @IsOptional()
+  @IsString()
+  voucherUrl?: string;
 }
 
-export type UpdatePaymentDto = Partial<CreatePaymentDto>;
+export class UpdatePaymentDto extends PartialType(CreatePaymentDto) {}

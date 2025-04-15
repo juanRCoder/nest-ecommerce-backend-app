@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePaymentDto, UpdatePaymentDto } from './dto/payments.dto';
 import { PrismaService } from 'src/prisma.service';
 
@@ -6,103 +10,168 @@ import { PrismaService } from 'src/prisma.service';
 export class PaymentsService {
   constructor(private prisma: PrismaService) {}
 
-  private paymentInclude = {
-    order: {
-      include: {
-        user: true,
-        Order_Product: {
-          include: {
-            product: true,
-          },
-        },
-      },
-    },
-  };
-  
-  private formatPayment(payment) {
-    const { updateAt, order_id, ...newPayment } = payment;
-    return {
-      ...newPayment,
-      order: {
-        id: payment.order.id,
-        total: payment.order.total,
-        status: payment.order.status,
-        delivery_method: payment.order.delivery_method,
-      },
-      user: {
-        name: payment.order.user.name,
-      },
-      products: payment.order.Order_Product.map(pr => ({
-        name: pr.product.name,
-        quantity: pr.quantity,
-        price: pr.price,
-        imgUrl: pr.product.imageUrl,
-      })),
-    };
-  }
-
-  async findAll() {
+  async findAllPayments() {
     try {
-      const payments = await this.prisma.payment.findMany({
-        include: this.paymentInclude,
-      });
-  
-      return payments.map(this.formatPayment);
+      const payments = await this.prisma.payment.findMany();
+      if (payments.length === 0) {
+        return { message: 'No payments found' };
+      }
+
+      return payments;
     } catch (error) {
-      throw new InternalServerErrorException('Payment get all failed');
+      if (error instanceof NotFoundException) throw error;
+      throw new InternalServerErrorException(
+        'Error finding all payments',
+        error,
+      );
     }
   }
 
-  async findOne(id: string) {
+  async findOnePayment(id: string) {
     try {
       const payment = await this.prisma.payment.findUnique({
         where: { id },
-        include: this.paymentInclude,
+        include: {
+          order: {
+            include: {
+              user: true,
+            },
+          },
+        },
       });
-  
-      return this.formatPayment(payment);
+
+      if (!payment) {
+        throw new NotFoundException(
+          `Payment with ID ${id} not found or has been deleted`,
+        );
+      }
+
+      const { updateAt, order_id, ...newPayment } = payment;
+      return {
+        ...newPayment,
+        order: {
+          id: payment.order.id,
+          total: payment.order.total,
+          status: payment.order.status,
+          delivery_method: payment.order.delivery_method,
+        },
+        user: {
+          id: payment.order.user.id,
+          name: payment.order.user.name,
+          phone: payment.order.user.phone,
+        },
+      };
     } catch (error) {
-      throw new InternalServerErrorException('Payment get for id failed');
+      if (error instanceof NotFoundException) throw error;
+      throw new InternalServerErrorException(
+        'Payment get for id failed',
+        error,
+      );
     }
   }
 
-  async create(createPaymentDto: CreatePaymentDto) {
+  async createPayment(createPaymentDto: CreatePaymentDto) {
     try {
       const payment = await this.prisma.$transaction(async (prisma) => {
         const createdPayment = await prisma.payment.create({
           data: { ...createPaymentDto },
         });
-  
+
         const getVoucher = await prisma.payment.findUnique({
           where: { id: createdPayment.id },
-          include: this.paymentInclude,
+          include: {
+            order: {
+              include: {
+                user: true,
+                Order_Product: {
+                  include: {
+                    product: true,
+                  },
+                },
+              },
+            },
+          },
         });
-  
-        return this.formatPayment(getVoucher);
+
+        if (!getVoucher || !getVoucher.order) {
+          throw new NotFoundException('Payment or associated order not found');
+        }
+
+        const { updateAt, order_id, ...newPayment } = getVoucher;
+
+        return {
+          ...newPayment,
+          order: {
+            id: getVoucher.order.id,
+            total: getVoucher.order.total,
+            status: getVoucher.order.status,
+            delivery_method: getVoucher.order.delivery_method,
+          },
+          user: {
+            id: getVoucher.order.user.id,
+            name: getVoucher.order.user.name,
+            phone: getVoucher.order.user.phone,
+          },
+          products: getVoucher.order.Order_Product.map((pr) => ({
+            name: pr.product.name,
+            quantity: pr.quantity,
+            price: pr.price,
+            imageUrl: pr.product.imageUrl,
+          })),
+        };
       });
-  
+
       return { message: 'Payment created successfully', payment };
     } catch (error) {
-      throw new InternalServerErrorException('Payment creation failed');
+      throw new InternalServerErrorException('Payment creation failed', error);
     }
   }
 
-  async update(id: string, updatePaymentDto: UpdatePaymentDto) {
+  async updatePayment(id: string, updatePaymentDto: UpdatePaymentDto) {
     try {
-      const updatedPayment = await this.prisma.payment.update({
+      const existingPayment = await this.prisma.payment.findUnique({
         where: { id },
-        data: updatePaymentDto
-      })
+      });
 
-      return { message: 'Payment updated successfully', updatedPayment}
+      if (!existingPayment) {
+        throw new NotFoundException(`Payment with ID ${id} not found`);
+      }
 
-    } catch(error) {
-      throw new InternalServerErrorException('Payment update failed')
+      await this.prisma.payment.update({
+        where: { id },
+        data: updatePaymentDto,
+      });
+
+      return { message: 'Payment updated successfully' };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Failed to update a Payment',
+        error,
+      );
     }
-    return `This action updates a #${id} payment`;
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} payment`;
-  // }
+  async removePayment(id: string) {
+    try {
+      const existingPayment = await this.prisma.payment.findUnique({
+        where: { id },
+      });
+
+      if (!existingPayment) {
+        throw new NotFoundException(`Payment with ID ${id} not found`);
+      }
+
+      await this.prisma.payment.delete({
+        where: { id },
+      });
+
+      return { message: 'removed payment successfully' };
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      throw new InternalServerErrorException(
+        'Failed to remove a payment',
+        error,
+      );
+    }
+  }
 }

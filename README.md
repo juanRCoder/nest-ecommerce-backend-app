@@ -30,14 +30,18 @@ POST   /products        #Agregar un nuevo producto, solo administradores autoriz
 PATCH  /products/:id    #Actualizar la información de un producto solo adminstrador autorizado.
 DELETE /products/:id    #Remover el producto, solo administrador autorizado.
 
-GET/orders/	#Listado de ordenes, solo administradores autorizados.
-GET/orders/:id	#Obtener informacion de la orden, debe estar autenticado.
-POST   /orders/		#Crear una nueva orden, debe estar autenticado.
-PATCH  /orders/:id	#Actualizar la información de una orden solo adminstrador autorizado.
-DELETE /orders/:id	#Eliminar la orden solo adminstrador autorizado.
+GET    /orders          #Listado de ordenes, solo administradores autorizados.
+GET    /orders/:id      #Obtener informacion de la orden, debe estar autenticado.
+POST   /orders          #ACrear una nueva orden, debe estar autenticado.
+PATCH  /orders/:id      #Actualizar la información de una orden solo adminstrador autorizado.
+DELETE /orders/:id      #Eliminar la orden solo adminstrador autorizado.
 
-POST  /payments        #Crear una nueva transacción de pago.
-GET   /payments/:id    #Consultar el estado de un pago.
+GET    /payments        #Listado de pagos, solo administradores autorizados.
+GET    /payments/:id    #Obtener informacion de un pago en especifico mediante id, solo administradores autorizados.
+POST   /payments        #Agregar un nuevo pago, solo administradores autorizados.
+PATCH  /payments/:id    #Actualizar la información de un pago solo adminstrador autorizado.
+DELETE /payments/:id    #Remover el pago, solo administrador autorizado.
+
 ```
 ## Licence
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).

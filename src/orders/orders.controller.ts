@@ -30,7 +30,7 @@ export class OrdersController {
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.ordersService.updateOrder(id, updateOrderDto);
   }
-   @Patch()
+  @Patch()
   handleMissingIdForUpdate() {
     throw new NotFoundException('ID must be provided for update');
   }

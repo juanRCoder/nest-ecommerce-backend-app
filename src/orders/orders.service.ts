@@ -26,6 +26,7 @@ export class OrdersService {
       status: order.status,
       delivery_method: order.delivery_method,
       user: {
+        id: order.user.id,
         name: order.user.name,
       },
       products: order.Order_Product.map((pr) => ({
@@ -40,13 +41,24 @@ export class OrdersService {
   async findAllOrders() {
     try {
       const orders = await this.prisma.order.findMany({
-        include: this.orderInclude,
+        select: {
+          id: true,
+          total: true,
+          status: true,
+          delivery_method: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
       });
-
-      return orders.map(this.formatOrder);
+  
+      return orders;
     } catch (error) {
       throw new InternalServerErrorException(
-        'Error finding the all orders',
+        'Error finding all orders',
         error,
       );
     }
@@ -56,7 +68,7 @@ export class OrdersService {
     try {
       const order = await this.prisma.order.findUnique({
         where: { id },
-        include: this.orderInclude,
+        include: this.orderInclude
       });
 
       if (!order) {
