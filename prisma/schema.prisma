@@ -50,8 +50,8 @@ model Order {
   id        String  @id @default(uuid())
   user_id   String  // foreign key
   total     Decimal
-  status    String
-  delivery_method String
+  status    String  @default("pending")
+  delivery_method String  @default("local")
 
   createAt  DateTime @default(now())
   updateAt  DateTime @updatedAt
@@ -65,8 +65,8 @@ model Order {
 model Payment {
   id        String  @id @default(uuid())
   order_id  String  @unique  // foreign key
-  payment_method  String
-  payment_status  String
+  payment_method  String @default("cash")
+  payment_status  String @default("pending")
   voucherUrl   String?
 
   createAt  DateTime @default(now())

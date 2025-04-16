@@ -13,34 +13,36 @@
 - Procesamiento de pagos y manejo de órdenes.
 ## API Endpoints
 ```bash
-POST   /auth/register   #Registra un nuevo usuario.
-POST   /auth/login      #Inicia session un usuario registrado.
+POST   /auth/register        #Registra un nuevo usuario.
+POST   /auth/login           #Inicia session un usuario registrado.
 
-GET    /users/profile   #Obtener información del perfil del usuario autenticado.
-GET    /users           #Obtiene toda la lista de usuarios, solo administradores autorizados.
-GET    /users/:id       #Obtener informacion de un usuario en especifico mediante id.
-PATCH  /users/:id       #Actualizar la informacion del usuario autenticado mediante id.
+GET    /users/profile        #Obtener información del perfil del usuario autenticado.
+GET    /users                #Obtiene toda la lista de usuarios, solo administradores autorizados.
+GET    /users/:id            #Obtener informacion de un usuario en especifico mediante id.
+PATCH  /users/:id            #Actualizar la informacion del usuario autenticado mediante id.
 
-GET    /products        #Listado de productos por paginado y filtrado de categorias.
-?page=                  #Pagina de productos que ver.
-?limit=                 #Limite de productos que ver por pagina.
-?category=              #Categoria de productos que ver.
-GET    /products/:id    #Obtener informacion de un producto en especifico mediante id.
-POST   /products        #Agregar un nuevo producto, solo administradores autorizados.
-PATCH  /products/:id    #Actualizar la información de un producto solo adminstrador autorizado.
-DELETE /products/:id    #Remover el producto, solo administrador autorizado.
+GET    /products             #Listado de productos por paginado y filtrado de categorias.
+?page=                       #Pagina de productos que ver.
+?limit=                      #Limite de productos que ver por pagina.
+?category=                   #Categoria de productos que ver.
+GET    /products/:id         #Obtener informacion de un producto en especifico mediante id.
+POST   /products             #Agregar un nuevo producto, solo administradores autorizados.
+PATCH  /products/:id         #Actualizar la información de un producto solo adminstrador autorizado.
+DELETE /products/:id         #Remover el producto, solo administrador autorizado.
 
-GET    /orders          #Listado de ordenes, solo administradores autorizados.
-GET    /orders/:id      #Obtener informacion de la orden, debe estar autenticado.
-POST   /orders          #ACrear una nueva orden, debe estar autenticado.
-PATCH  /orders/:id      #Actualizar la información de una orden solo adminstrador autorizado.
-DELETE /orders/:id      #Eliminar la orden solo adminstrador autorizado.
+GET    /orders               #Listado de ordenes, solo administradores autorizados.
+GET    /orders/:id           #Obtener informacion de la orden, debe estar autenticado.
+POST   /orders               #ACrear una nueva orden, debe estar autenticado.
+PATCH  /orders/:id           #Actualizar la información de una orden solo adminstrador autorizado.
+PATCH  /orders/:id/status    #Actualizar estado de una orden solo adminstrador autorizado.
+DELETE /orders/:id           #Eliminar la orden solo adminstrador autorizado.
 
-GET    /payments        #Listado de pagos, solo administradores autorizados.
-GET    /payments/:id    #Obtener informacion de un pago en especifico mediante id, solo administradores autorizados.
-POST   /payments        #Agregar un nuevo pago, solo administradores autorizados.
-PATCH  /payments/:id    #Actualizar la información de un pago solo adminstrador autorizado.
-DELETE /payments/:id    #Remover el pago, solo administrador autorizado.
+GET    /payments             #Listado de pagos, solo administradores autorizados.
+GET    /payments/:id         #Obtener informacion de un pago, solo administradores autorizados.
+POST   /payments             #Agregar un nuevo pago, solo administradores autorizados.
+PATCH  /payments/:id         #Actualizar la información de un pago solo adminstrador autorizado.
+PATCH  /payments/:id/confirm #Actualizar el estado del pago, solo administrador autorizado.
+DELETE /payments/:id         #Remover el pago, solo administrador autorizado.
 
 ```
 ## Licence

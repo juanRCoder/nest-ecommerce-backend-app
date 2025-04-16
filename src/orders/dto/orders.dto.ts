@@ -1,6 +1,5 @@
 import {
   IsArray,
-  IsDecimal,
   IsIn,
   IsString,
   ValidateNested,
@@ -16,7 +15,7 @@ export class ProductsCart {
   @IsNumber()
   quantity: number;
 
-  @IsDecimal()
+  @IsNumber({ maxDecimalPlaces: 2 })
   price: number;
 }
 
@@ -26,13 +25,13 @@ export class CreateOrderDto {
 
   @IsString()
   @IsIn(['pending', 'ready', 'completed'])
-  status: 'pending' | 'ready' | 'completed';
+  status: string;
 
   @IsString()
   @IsIn(['local', 'delivery'])
-  delivery_method: 'local' | 'delivery';
+  delivery_method: string;
 
-  @IsDecimal()
+  @IsNumber({ maxDecimalPlaces: 2 })
   total: number;
 
   @IsArray()

@@ -38,6 +38,10 @@ export class PaymentsController {
   update(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
     return this.paymentsService.updatePayment(id, updatePaymentDto);
   }
+  @Patch('/:id/confirm')
+  confirmPayment(@Param('id') id: string, @Body() updatePaymentDto: UpdatePaymentDto) {
+    return this.paymentsService.confirmPayment(id, updatePaymentDto)
+  }
   handleMissingIdForUpdate() {
     throw new NotFoundException('ID must be provided for update');
   }

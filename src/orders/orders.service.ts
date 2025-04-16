@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -54,13 +55,10 @@ export class OrdersService {
           },
         },
       });
-  
+
       return orders;
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Error finding all orders',
-        error,
-      );
+      throw new InternalServerErrorException('Error finding all orders', error);
     }
   }
 
@@ -68,7 +66,7 @@ export class OrdersService {
     try {
       const order = await this.prisma.order.findUnique({
         where: { id },
-        include: this.orderInclude
+        include: this.orderInclude,
       });
 
       if (!order) {
@@ -160,6 +158,39 @@ export class OrdersService {
       throw new InternalServerErrorException('Failed to update a order', error);
     }
   }
+  async updateStatusOrder(id: string, updateOrderDto: UpdateOrderDto) {
+    try {
+      if (!id) {
+        throw new NotFoundException('Order ID is required');
+      }
+      if (!updateOrderDto.status) {
+        throw new NotFoundException('Order status is required');
+      }
+      const allowedStatuses = ['pending', 'ready', 'completed'];
+      if (!allowedStatuses.includes(updateOrderDto.status)) {
+        throw new BadRequestException(`Invalid order status: ${updateOrderDto.status}`);
+      }
+
+      const existingOrder = await this.prisma.order.findUnique({
+        where: { id },
+      });
+
+      if (!existingOrder) {
+        throw new NotFoundException(`Order with ID ${id} not found`);
+      }
+
+      await this.prisma.order.update({
+        where: { id },
+        data: updateOrderDto
+      });
+
+      return { message: 'Order status updated successfully' };
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      console.error('Error updating order status:', error);
+      throw new InternalServerErrorException('Failed to update the order');
+    }
+  }
 
   async removeOrder(id: string) {
     try {
@@ -171,21 +202,18 @@ export class OrdersService {
         throw new NotFoundException(`Order with ID ${id} not found`);
       }
 
-    await this.prisma.order_Product.deleteMany({
-      where: { order_id: id },
-    });
+      await this.prisma.order_Product.deleteMany({
+        where: { order_id: id },
+      });
 
-    await this.prisma.order.delete({
-      where: { id },
-    });
+      await this.prisma.order.delete({
+        where: { id },
+      });
 
       return { message: 'removed order successfully' };
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException(
-        'Failed to remove a order',
-        error,
-      );
+      throw new InternalServerErrorException('Failed to remove a order', error);
     }
   }
 }
