@@ -38,8 +38,8 @@ PATCH  /orders/:id/status    #Actualizar estado de una orden solo adminstrador a
 DELETE /orders/:id           #Eliminar la orden solo adminstrador autorizado.
 
 GET    /payments             #Listado de pagos, solo administradores autorizados.
-GET    /payments/:id         #Obtener informacion de un pago, solo administradores autorizados.
-POST   /payments             #Agregar un nuevo pago, solo administradores autorizados.
+GET    /payments/:id         #Obtener informacion de un pago, debe estar autenticado.
+POST   /payments             #Crear un nuevo pago, debe estar autenticado.
 PATCH  /payments/:id         #Actualizar la información de un pago solo adminstrador autorizado.
 PATCH  /payments/:id/confirm #Actualizar el estado del pago, solo administrador autorizado.
 DELETE /payments/:id         #Remover el pago, solo administrador autorizado.

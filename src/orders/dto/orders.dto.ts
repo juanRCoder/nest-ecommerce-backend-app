@@ -4,6 +4,7 @@ import {
   IsString,
   ValidateNested,
   IsNumber,
+  IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { OmitType, PartialType } from '@nestjs/mapped-types';
@@ -15,24 +16,26 @@ export class ProductsCart {
   @IsNumber()
   quantity: number;
 
-  @IsNumber({ maxDecimalPlaces: 2 })
-  price: number;
+  @IsString()
+  price: string;
 }
 
 export class CreateOrderDto {
   @IsString()
   user_id: string;
 
+  @IsOptional()
   @IsString()
   @IsIn(['pending', 'ready', 'completed'])
   status: string;
 
+  @IsOptional()
   @IsString()
   @IsIn(['local', 'delivery'])
   delivery_method: string;
 
-  @IsNumber({ maxDecimalPlaces: 2 })
-  total: number;
+  @IsString()
+  total: string;
 
   @IsArray()
   @ValidateNested({ each: true })

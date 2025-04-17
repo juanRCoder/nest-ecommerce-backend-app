@@ -154,48 +154,51 @@ export class PaymentsService {
 
   async confirmPayment(id: string, updatePaymentDto: UpdatePaymentDto) {
     try {
+      if (!updatePaymentDto.payment_status) {
+        throw new NotFoundException('Payment status is required');
+      }
       const existingPayment = await this.prisma.payment.findUnique({
         where: { id },
       });
-  
+
       if (!existingPayment) {
         throw new NotFoundException(`Payment with ID ${id} not found`);
       }
-      if (existingPayment.payment_status === "completed") {
-        return { message: `This payment with ID ${id} it was already confirmed`}
+      if (existingPayment.payment_status === 'completed') {
+        return {
+          message: `This payment with ID ${id} it was already confirmed`,
+        };
       }
 
       const updatedPayment = await this.prisma.payment.update({
         where: { id },
         data: updatePaymentDto,
       });
-  
+
       const orderProducts = await this.prisma.order_Product.findMany({
         where: { order_id: updatedPayment.order_id },
         include: {
           product: true,
         },
       });
-  
+
       const stockUpdates = orderProducts.map(({ product, quantity }) =>
         this.prisma.product.update({
           where: { id: product.id },
           data: {
             stock: product.stock - quantity,
           },
-        })
+        }),
       );
-  
+
       await this.prisma.$transaction(stockUpdates);
 
       return { message: 'Payment confirmed and stock updated' };
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
-  
+
       console.error('Error confirming payment:', error);
-      throw new InternalServerErrorException(
-        'Failed to confirm payment',
-      );
+      throw new InternalServerErrorException('Failed to confirm payment');
     }
   }
 
