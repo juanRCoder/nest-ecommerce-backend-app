@@ -6,7 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { signInDto } from './dto/auth.dto';
 import { UserDto } from 'src/users/dto/users.dto';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
