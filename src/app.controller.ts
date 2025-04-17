@@ -3,7 +3,11 @@ import { Controller, Get } from '@nestjs/common';
 @Controller()
 export class AppController {
   @Get()
-  getRoot(): string {
-    return 'Server started on and connected';
+  getRoot() {
+    return {
+      message: 'Server started and successfully connected',
+      status: 'ok',
+      date: new Date().toISOString(),
+    };
   }
 }
